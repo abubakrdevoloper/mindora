@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MINDORA — Aqlni Charxlovchi Interaktiv O‘yin Platformasi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Animated Ambient Background -->
+  <div class="ambient-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <!-- Toast / Achievement Notification -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- SCREEN 1: LOGIN / USERNAME -->
+  <section id="screen-login" class="screen active">
+    <div class="glass-card login-card fade-in">
+      <div class="brand-logo">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+          <defs>
+            <linearGradient id="mindoraGrad" x1="0" y1="0" x2="48" y2="48">
+              <stop offset="0%" stop-color="#8B5CF6" />
+              <stop offset="100%" stop-color="#38BDF8" />
+            </linearGradient>
+          </defs>
+          <rect width="48" height="48" rx="14" fill="url(#mindoraGrad)" fill-opacity="0.15" stroke="url(#mindoraGrad)" stroke-width="2"/>
+          <path d="M14 32V16L24 25L34 16V32" stroke="url(#mindoraGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="24" cy="14" r="2.5" fill="#38BDF8"/>
+        </svg>
+        <span class="brand-name">MINDORA</span>
+      </div>
+      <h1 class="login-title">Aqlingni sinab ko‘rishga tayyormisan?</h1>
+      <p class="login-subtitle">Mantiq, xotira, diqqat va tezkor fikrlashni professional darajada rivojlantiruvchi intellektual platforma.</p>
+
+      <div id="returning-user-box" class="returning-box hidden">
+        <p>Qaytganingdan xursandmiz, <strong id="saved-username-label"></strong>!</p>
+        <button id="btn-continue-saved" class="btn btn-primary w-full">Davom etish</button>
+        <div class="divider"><span>yoki yangi hisob</span></div>
+      </div>
+
+      <form id="login-form" class="login-form">
+        <div class="input-group">
+          <label for="username-input">Foydalanuvchi nomi (Username)</label>
+          <input type="text" id="username-input" placeholder="Masalan: Jasur_Pro" maxlength="20" autocomplete="off" />
+          <span id="login-error" class="error-msg hidden">Iltimos, foydalanuvchi nomini kiriting!</span>
+        </div>
+        <button type="submit" class="btn btn-primary w-full ripple-btn">
+          <span>Boshlash</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- SCREEN 2: AGE TIER SELECTION -->
+  <section id="screen-age" class="screen">
+    <div class="container age-container fade-in">
+      <header class="age-header">
+        <div class="brand-logo small">
+          <span class="brand-name">MINDORA</span>
+        </div>
+        <h2>Yosh toifangizni tanlang, <span class="highlight-user" id="age-greeting-user"></span></h2>
+        <p>Har bir yosh toifasi uchun maxsus interfeys, moslashtirilgan murakkablik va alohida kognitiv mashqlar to‘plami tayyorlangan.</p>
+      </header>
+
+      <div class="age-grid" id="age-cards-grid">
+        <!-- Populated dynamically by script.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 3: MAIN APPLICATION SHELL -->
+  <div id="app-shell" class="app-shell hidden">
+    <!-- Top Navbar -->
+    <nav class="navbar glass-panel">
+      <div class="nav-left">
+        <button id="mobile-menu-btn" class="icon-btn mobile-only" aria-label="Menyu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+        <div class="brand-logo small cursor-pointer" data-nav="dashboard">
+          <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
+            <rect width="48" height="48" rx="12" fill="url(#mindoraGrad)" fill-opacity="0.2" stroke="url(#mindoraGrad)" stroke-width="2.5"/>
+            <path d="M14 32V16L24 25L34 16V32" stroke="url(#mindoraGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="brand-name">MINDORA</span>
+        </div>
+        <span id="nav-age-badge" class="age-badge">10–14 YOSH</span>
+      </div>
+
+      <ul class="nav-links" id="nav-links">
+        <li><button class="nav-item active" data-nav="dashboard">Bosh sahifa</button></li>
+        <li><button class="nav-item" data-nav="games">O‘yinlar</button></li>
+        <li><button class="nav-item" data-nav="rating">Reyting</button></li>
+        <li><button class="nav-item" data-nav="stats">Natijalar</button></li>
+        <li><button class="nav-item" data-nav="profile">Profil</button></li>
+        <li><button class="nav-item" data-nav="settings">Sozlamalar</button></li>
+      </ul>
+
+      <div class="nav-right">
+        <div class="xp-pill" title="Jami XP">
+          <span class="xp-icon">⚡</span>
+          <span id="nav-xp-val">0 XP</span>
+        </div>
+        <button class="user-pill" data-nav="profile">
+          <span id="nav-avatar" class="avatar-mini">🧠</span>
+          <span id="nav-username">User</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Dynamic Views -->
+    <main class="main-content container">
+      <!-- VIEW: DASHBOARD -->
+      <div id="view-dashboard" class="view active fade-in">
+        <div class="welcome-banner glass-card">
+          <div class="welcome-info">
+            <div class="date-chip" id="today-date">Bugun</div>
+            <h1>Xush kelibsan, <span id="dash-username" class="gradient-text"></span>!</h1>
+            <p id="daily-quote" class="quote-text">"Aql — mushak kabi: har kuni mashq qildirsang, yanada kuchayadi."</p>
+          </div>
+          <div class="daily-goal-box">
+            <div class="goal-header">
+              <span>Kunlik maqsad</span>
+              <strong id="daily-goal-text">0 / 3 o‘yin</strong>
+            </div>
+            <div class="progress-track">
+              <div id="daily-goal-bar" class="progress-fill" style="width: 0%"></div>
+            </div>
+            <small id="tier-tagline" class="tier-note"></small>
+          </div>
+        </div>
+
+        <!-- 5 Key Stats -->
+        <div class="stats-grid">
+          <div class="stat-card glass-card">
+            <span class="stat-label">Jami ball</span>
+            <strong class="stat-value" id="stat-total-score">0</strong>
+            <span class="stat-sub">Umumiy to‘plangan</span>
+          </div>
+          <div class="stat-card glass-card">
+            <span class="stat-label">O‘ynalgan o‘yinlar</span>
+            <strong class="stat-value" id="stat-games-played">0</strong>
+            <span class="stat-sub">Barcha sessiyalar</span>
+          </div>
+          <div class="stat-card glass-card">
+            <span class="stat-label">To‘g‘ri javoblar</span>
+            <strong class="stat-value" id="stat-correct-answers">0</strong>
+            <span class="stat-sub">Aniq yechimlar</span>
+          </div>
+          <div class="stat-card glass-card">
+            <span class="stat-label">Eng yaxshi natija</span>
+            <strong class="stat-value" id="stat-best-score">0</strong>
+            <span class="stat-sub">Rekord ko‘rsatkich</span>
+          </div>
+          <div class="stat-card glass-card">
+            <span class="stat-label">Ketma-ket kunlar</span>
+            <strong class="stat-value" id="stat-streak">1 kun</strong>
+            <span class="stat-sub">Faollik seriyasi</span>
+          </div>
+        </div>
+
+        <div class="dashboard-split">
+          <!-- Game of the Day + Categories -->
+          <div class="dash-left">
+            <div class="section-header">
+              <h3>Kun o‘yini</h3>
+              <span class="badge-glow">+25% Bonus XP</span>
+            </div>
+            <div id="game-of-day-card" class="featured-game glass-card"></div>
+
+            <div class="section-header mt-24">
+              <h3>O‘yinlar kategoriyasi</h3>
+              <button class="link-btn" data-nav="games">Barchasini ko‘rish →</button>
+            </div>
+            <div class="categories-grid" id="dash-categories"></div>
+          </div>
+
+          <!-- Progress Chart & Recent History -->
+          <div class="dash-right">
+            <div class="glass-card chart-box">
+              <div class="section-header">
+                <h3>Shaxsiy rivojlanish grafigi</h3>
+                <span class="muted-text">So‘nggi 7 o‘yin</span>
+              </div>
+              <div id="dash-svg-chart" class="svg-chart-wrap"></div>
+            </div>
+
+            <div class="glass-card recent-box mt-24">
+              <div class="section-header">
+                <h3>Oxirgi natijalar</h3>
+              </div>
+              <div id="dash-recent-list" class="recent-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: GAMES LIBRARY -->
+      <div id="view-games" class="view fade-in">
+        <div class="page-head">
+          <div>
+            <h2>O‘yinlar kutubxonasi</h2>
+            <p id="games-tier-desc">Sizning yosh toifangizga moslashtirilgan 15 ta kognitiv trenajyor.</p>
+          </div>
+          <div class="filter-pills" id="category-filters">
+            <button class="filter-btn active" data-cat="all">Barchasi (15)</button>
+            <button class="filter-btn" data-cat="Xotira">Xotira</button>
+            <button class="filter-btn" data-cat="Mantiq">Mantiq</button>
+            <button class="filter-btn" data-cat="Matematika">Matematika</button>
+            <button class="filter-btn" data-cat="Diqqat">Diqqat & Fazoviy</button>
+          </div>
+        </div>
+        <div id="games-library-grid" class="games-grid"></div>
+      </div>
+
+      <!-- VIEW: ACTIVE GAME ARENA -->
+      <div id="view-game-play" class="view fade-in">
+        <div class="game-topbar glass-card">
+          <button id="btn-exit-game" class="btn btn-ghost">
+            ← Bosh sahifaga qaytish
+          </button>
+          <div class="game-title-meta">
+            <h3 id="active-game-title">O‘yin nomi</h3>
+            <span id="active-game-diff" class="diff-badge">O‘rta</span>
+          </div>
+          <div class="game-hud">
+            <div class="hud-item">
+              <span>Ball</span>
+              <strong id="hud-score">0</strong>
+            </div>
+            <div class="hud-item">
+              <span>Vaqt</span>
+              <strong id="hud-timer">00:00</strong>
+            </div>
+            <button id="btn-restart-game" class="btn btn-secondary btn-sm">Qayta boshlash</button>
+          </div>
+        </div>
+
+        <div id="game-stage" class="game-stage glass-card">
+          <!-- Dynamic Game Canvas/DOM injected here -->
+        </div>
+      </div>
+
+      <!-- VIEW: RATING & LEVELS -->
+      <div id="view-rating" class="view fade-in">
+        <div class="page-head">
+          <h2>Ball va Reyting tizimi</h2>
+          <p>Har bir o‘yindagi aniqlik, tezkorlik va qiyinlik darajasi sizning intellektual darajangizni oshiradi.</p>
+        </div>
+
+        <div class="glass-card rank-hero">
+          <div class="rank-current">
+            <span class="rank-badge-lg" id="rank-current-icon">🚀</span>
+            <div>
+              <span class="muted-text">Joriy darajangiz</span>
+              <h2 id="rank-current-name">Beginner</h2>
+              <p id="rank-xp-progress-text">0 / 500 XP keyingi darajagacha</p>
+            </div>
+          </div>
+          <div class="progress-track lg">
+            <div id="rank-progress-bar" class="progress-fill" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <div class="ranks-grid" id="ranks-list"></div>
+      </div>
+
+      <!-- VIEW: STATISTICS -->
+      <div id="view-stats" class="view fade-in">
+        <div class="page-head">
+          <h2>Natijalar va Statistika</h2>
+          <p>Kunlik, haftalik va oylik kognitiv o‘sish ko‘rsatkichlaringiz tahlili.</p>
+        </div>
+
+        <div class="stats-summary-grid">
+          <div class="glass-card stat-card">
+            <span class="stat-label">Kunlik natija</span>
+            <strong class="stat-value" id="st-daily">0 ball</strong>
+          </div>
+          <div class="glass-card stat-card">
+            <span class="stat-label">Haftalik natija</span>
+            <strong class="stat-value" id="st-weekly">0 ball</strong>
+          </div>
+          <div class="glass-card stat-card">
+            <span class="stat-label">Oylik natija</span>
+            <strong class="stat-value" id="st-monthly">0 ball</strong>
+          </div>
+          <div class="glass-card stat-card">
+            <span class="stat-label">To‘g‘ri javoblar foizi</span>
+            <strong class="stat-value" id="st-accuracy">0%</strong>
+          </div>
+          <div class="glass-card stat-card">
+            <span class="stat-label">Eng yaxshi o‘yin</span>
+            <strong class="stat-value text-md" id="st-best-game">—</strong>
+          </div>
+          <div class="glass-card stat-card">
+            <span class="stat-label">Eng ko‘p o‘ynalgan</span>
+            <strong class="stat-value text-md" id="st-most-played">—</strong>
+          </div>
+        </div>
+
+        <div class="glass-card chart-box mt-24">
+          <h3>O‘sish grafigi (Ballar dinamikasi)</h3>
+          <div id="stats-full-chart" class="svg-chart-wrap tall"></div>
+        </div>
+      </div>
+
+      <!-- VIEW: PROFILE -->
+      <div id="view-profile" class="view fade-in">
+        <div class="profile-grid">
+          <div class="glass-card profile-sidebar">
+            <div class="profile-avatar-display" id="profile-avatar-big">🧠</div>
+            <h2 id="profile-username">User</h2>
+            <span class="age-badge" id="profile-age-badge">Yosh toifasi</span>
+            <div class="profile-rank-tag" id="profile-rank-tag">Beginner</div>
+
+            <div class="avatar-picker">
+              <label>Minimalistik avatar tanlang:</label>
+              <div class="avatar-options" id="avatar-options"></div>
+            </div>
+
+            <div class="profile-mini-stats">
+              <div><span>Umumiy ball</span><strong id="prof-score">0</strong></div>
+              <div><span>Jami XP</span><strong id="prof-xp">0</strong></div>
+              <div><span>Eng yaxshi</span><strong id="prof-best">0</strong></div>
+              <div><span>Kunlik faollik</span><strong id="prof-streak">1 kun</strong></div>
+            </div>
+          </div>
+
+          <div class="profile-main">
+            <div class="glass-card">
+              <h3>Yutuqlar (Achievements)</h3>
+              <div class="achievements-grid" id="achievements-grid"></div>
+            </div>
+
+            <div class="glass-card mt-24">
+              <h3>O‘yinlar tarixi</h3>
+              <div class="table-wrap">
+                <table class="history-table">
+                  <thead>
+                    <tr>
+                      <th>O‘yin</th>
+                      <th>Ball</th>
+                      <th>Aniqlik</th>
+                      <th>Vaqt</th>
+                      <th>Sana</th>
+                    </tr>
+                  </thead>
+                  <tbody id="profile-history-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: SETTINGS -->
+      <div id="view-settings" class="view fade-in">
+        <div class="page-head">
+          <h2>Sozlamalar</h2>
+          <p>Platforma ko‘rinishi, tovush effektlari va shaxsiy hisob boshqaruvi.</p>
+        </div>
+
+        <div class="settings-list glass-card">
+          <div class="setting-row">
+            <div>
+              <h4>Mavzu (Dark / Light mode)</h4>
+              <p>Yorug‘ yoki tungi futuristik interfeysni tanlang.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-theme" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div>
+              <h4>Ovoz effektlari</h4>
+              <p>O‘yin jarayonidagi interaktiv audio signallarni yoqish/o‘chirish.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-sound" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div>
+              <h4>Animatsiyalar</h4>
+              <p>Silliq o‘tishlar va vizual effektlarni boshqarish.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="toggle-animations" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div>
+              <h4>Username o‘zgartirish</h4>
+              <p>Profilingizdagi ko‘rinadigan nomni yangilang.</p>
+            </div>
+            <div class="inline-form">
+              <input type="text" id="settings-username-input" maxlength="20" />
+              <button id="btn-save-username" class="btn btn-primary btn-sm">Saqlash</button>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <div>
+              <h4>Yosh toifasini o‘zgartirish</h4>
+              <p>O‘yinlar murakkabligi va dizaynini boshqa yosh toifasiga o‘tkazing.</p>
+            </div>
+            <button id="btn-change-age" class="btn btn-secondary btn-sm">Toifani tanlash</button>
+          </div>
+
+          <div class="setting-row danger-zone">
+            <div>
+              <h4>Ma'lumotlarni tozalash</h4>
+              <p>Barcha ballar, yutuqlar va o‘yinlar tarixini noldan boshlash.</p>
+            </div>
+            <button id="btn-reset-data" class="btn btn-danger btn-sm">Tozalash</button>
+          </div>
+
+          <div class="setting-row">
+            <div>
+              <h4>O‘yindan chiqish</h4>
+              <p>Boshqa foydalanuvchi nomi bilan kirish sahifasiga qaytish.</p>
+            </div>
+            <button id="btn-logout" class="btn btn-ghost btn-sm">Chiqish</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL: GAME RESULT -->
+  <div id="result-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card glass-card pop-in">
+      <div class="result-icon" id="res-icon">🏆</div>
+      <h2 id="res-title">Bosqich yakunlandi!</h2>
+      <p id="res-subtitle" class="muted-text">Ajoyib natija!</p>
+
+      <div class="result-metrics">
+        <div class="res-metric">
+          <span>To‘plangan ball</span>
+          <strong id="res-score">+0</strong>
+        </div>
+        <div class="res-metric">
+          <span>Qo‘shilgan XP</span>
+          <strong id="res-xp" class="accent-blue">+0 XP</strong>
+        </div>
+        <div class="res-metric">
+          <span>To‘g‘ri javoblar</span>
+          <strong id="res-correct">0</strong>
+        </div>
+        <div class="res-metric">
+          <span>Sarflangan vaqt</span>
+          <strong id="res-time">0s</strong>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button id="btn-modal-replay" class="btn btn-primary">Qayta o‘ynash</button>
+        <button id="btn-modal-home" class="btn btn-secondary">Bosh sahifaga</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
